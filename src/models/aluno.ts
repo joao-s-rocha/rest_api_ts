@@ -15,7 +15,7 @@ const insertAluno = async (aluno: Aluno) =>{
   return retorno[0].id as number | undefined;
 }
 
-const listAlunos = async (id? : number) => {
+const listAlunos = async (id? : number, limite? : number, paginas? : number) => {
   const retorno = await query(`SELECT * FROM aluno`);
   return retorno as Aluno[];
 }
@@ -28,5 +28,4 @@ const getAlunoByName = async (name: string) => {
 export const alunoModel = {
   insertAluno,
   listAlunos,
-
 }

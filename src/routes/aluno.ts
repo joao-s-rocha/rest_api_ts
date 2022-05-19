@@ -5,7 +5,7 @@ import { Aluno } from '../models/aluno';
 const alunoRouter = Router();
 
 alunoRouter.post('/', alunoController.insertAluno);
-alunoRouter.get('/', alunoController.listAlunos);
+alunoRouter.get('/', alunoController.getAlunos);
 
 export {
   alunoRouter

@@ -33,8 +33,10 @@ const insertAluno = (req: Request, res: Response) => {
 
 const getAlunos = (req: Request, res: Response) => {
   const limite = parseInt(req.params.limite);
+  const id = parseInt(req.params.id);
+  const paginas = parseInt(req.params.paginas);
 
-  alunoModel.listAlunos().then(
+  alunoModel.listAlunos(id, limite, paginas).then(
     alunos => {
       res.json(alunos)
     })
