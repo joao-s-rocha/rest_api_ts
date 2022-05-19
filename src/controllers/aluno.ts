@@ -31,7 +31,9 @@ const insertAluno = (req: Request, res: Response) => {
     .catch(err => internalServerError(res, err))
 }
 
-const listAlunos = (req: Request, res: Response) => {
+const getAlunos = (req: Request, res: Response) => {
+  const limite = parseInt(req.params.limite);
+
   alunoModel.listAlunos().then(
     alunos => {
       res.json(alunos)
@@ -41,6 +43,6 @@ const listAlunos = (req: Request, res: Response) => {
 
 export const alunoController = {
   insertAluno,
-  listAlunos
+  getAlunos
 }
 

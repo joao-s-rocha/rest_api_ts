@@ -15,7 +15,7 @@ const insertAluno = async (aluno: Aluno) =>{
   return retorno[0].id as number | undefined;
 }
 
-const listAlunos = async () => {
+const listAlunos = async (id? : number) => {
   const retorno = await query(`SELECT * FROM aluno`);
   return retorno as Aluno[];
 }
