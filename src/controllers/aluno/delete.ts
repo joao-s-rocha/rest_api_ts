@@ -9,7 +9,7 @@ export const deleteAluno = (req: Request, res: Response) => {
       return badRequest(res, 'id inválido');
   }
 
-  alunoModel.deleteAluno(id)
+  alunoModel.deleteAluno(id, res)
     .then(() => okay(res))
     .catch(err => internalServerError(res, err))
 }

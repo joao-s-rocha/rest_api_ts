@@ -1,4 +1,6 @@
 import { query, queryFirst } from "../services/db";
+import { Response } from "express";
+import { notFound, internalServerError } from "../services/util";
 
 export type Aluno = {
   id: number;
@@ -39,7 +41,15 @@ const getAlunoById = async(id: number) => {
   return retorno as Aluno;
 }
 
-const deleteAluno = async(id: number) => {
+const deleteAluno = async(id: number, res: Response) => {
+  getAlunoById(id)
+    .then((aluno) => {
+      (aluno ? del(id) : notFound(res))
+    })
+    .catch(err => internalServerError(res, err))
+}
+
+const del = async(id : number) => {
   await queryFirst(`DELETE FROM aluno WHERE id = ? `, [id]);
 }
 
