@@ -1,3 +1,4 @@
+import { ok } from 'assert';
 import {Request, Response} from 'express';
 import { Aluno, alunoModel } from '../models/aluno';
 import { badRequest, internalServerError, notFound, validateNumber } from '../services/util';
@@ -62,9 +63,22 @@ const getAlunoById = (req: Request, res: Response) => {
     .catch(err => internalServerError(res, err))
 }
 
+const deleteAluno = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  {
+    if(!validateNumber(id))
+      return badRequest(res, 'id inválido');
+  }
+
+  alunoModel.deleteAluno(id)
+    .then(() => ok(res))
+    .catch(err => internalServerError(res, err))
+}
+
 export const alunoController = {
   insertAluno,
   getAlunos,
-  getAlunoById
+  getAlunoById,
+  deleteAluno
 }
 

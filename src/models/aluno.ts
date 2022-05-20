@@ -20,9 +20,7 @@ const listAlunos = async (idNome? : number | string, limite?: number, paginas?: 
   limite = limite || 25;
   paginas = paginas || 1;
 
-  let text: string = '';
   sqlQry.push(`SELECT * FROM aluno`);
-  // console.log(eval('sqlQry.includes(`WHERE`)'))
  
   if (!!idNome) {
     sqlQry.push('WHERE');
@@ -31,21 +29,9 @@ const listAlunos = async (idNome? : number | string, limite?: number, paginas?: 
     else sqlQry.push(`id = ${idNome}`);
   }
 
-  // montarSql('WHERE', '!contains(`WHERE)`', 'AND')
-
-  // if (!!idNome) {
-  //   if (!sqlQry.includes(`WHERE`)) sqlQry.push('WHERE');
-  //   else sqlQry.push('AND');
-
-  //   sqlQry.push(`nome like '%${idNome}%'`);
-  // }
-  // console.log(eval('sqlQry.includes(`WHERE`)'))
   sqlQry.push(`LIMIT ${limite} OFFSET ${(paginas - 1) * limite}`);
 
-  text = sqlQry.join(' ')
-  console.log(text)
-
-  const retorno = await query(text);
+  const retorno = await query(sqlQry.join(' '));
 
   return retorno as Aluno[];
 }
@@ -55,13 +41,13 @@ const getAlunoById = async(id: number) => {
   return retorno as Aluno;
 }
 
-const getAlunoByName = async (name: string) => {
-  const retorno = await query(`SELECT * FROM aluno WHERE upper(nome) like upper('%?%') `, [name]);
-  return retorno as Aluno[];
+const deleteAluno = async(id: number) => {
+  await queryFirst(`DELETE FROM aluno WHERE id = ? `, [id]);
 }
 
 export const alunoModel = {
   insertAluno,
   listAlunos,
-  getAlunoById
+  getAlunoById,
+  deleteAluno
 }
