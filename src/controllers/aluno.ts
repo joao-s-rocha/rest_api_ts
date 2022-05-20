@@ -1,7 +1,7 @@
 import { ok } from 'assert';
 import {Request, Response} from 'express';
 import { Aluno, alunoModel } from '../models/aluno';
-import { badRequest, internalServerError, notFound, validateNumber } from '../services/util';
+import { badRequest, internalServerError, notFound, okay, validateNumber } from '../services/util';
 
 const insertAluno = (req: Request, res: Response) => {
   {
@@ -36,13 +36,10 @@ const insertAluno = (req: Request, res: Response) => {
 }
 
 const getAlunos = (req: Request, res: Response) => {
-  let {id, paginas, limite, nome} = req.body
 
-  let idNome = +id || nome
-  paginas = +paginas
-  limite = +limite
+  let { nome, limite, paginas }: any = req.query
 
-  alunoModel.listAlunos(idNome, limite, paginas).then(
+  alunoModel.listAlunos(nome, limite, paginas).then(
     alunos => {
       res.json(alunos)
     })
@@ -71,7 +68,7 @@ const deleteAluno = (req: Request, res: Response) => {
   }
 
   alunoModel.deleteAluno(id)
-    .then(() => ok(res))
+    .then(() => okay(res))
     .catch(err => internalServerError(res, err))
 }
 

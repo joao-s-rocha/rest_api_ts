@@ -15,22 +15,20 @@ const insertAluno = async (aluno: Aluno) =>{
   return retorno[0].id as number | undefined;
 }
 
-const listAlunos = async (idNome? : number | string, limite?: number, paginas?: number) => {
+const listAlunos = async (nome? : string, limite?: number, paginas?: number) => {
   const sqlQry: string[] = [];
   limite = limite || 25;
   paginas = paginas || 1;
+  nome = nome || '';
 
   sqlQry.push(`SELECT * FROM aluno`);
  
-  if (!!idNome) {
-    sqlQry.push('WHERE');
-
-    if (typeof idNome == 'string') sqlQry.push(`nome like '%${idNome}%'`)
-    else sqlQry.push(`id = ${idNome}`);
+  if (!!nome) {
+    sqlQry.push(`WHERE nome like '%${nome}%'`)
   }
 
   sqlQry.push(`LIMIT ${limite} OFFSET ${(paginas - 1) * limite}`);
-
+  console.log(sqlQry.join(' '));
   const retorno = await query(sqlQry.join(' '));
 
   return retorno as Aluno[];
