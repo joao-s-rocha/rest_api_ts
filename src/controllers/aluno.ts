@@ -35,16 +35,13 @@ const insertAluno = (req: Request, res: Response) => {
 }
 
 const getAlunos = (req: Request, res: Response) => {
-  const corpo = req.body;
-  const limite = (corpo.limite 
-    ? (validateNumber(corpo.limite) ? parseInt(corpo.limite) : undefined)
-    : undefined);
-  const paginas = (corpo.paginas 
-    ? (validateNumber(corpo.paginas) ? parseInt(corpo.paginas) : undefined)
-    : undefined);
-  const nome = corpo.nome;
+  let {id, paginas, limite, nome} = req.body
 
-  alunoModel.listAlunos(limite, paginas, nome).then(
+  let idNome = +id || nome
+  paginas = +paginas
+  limite = +limite
+
+  alunoModel.listAlunos(idNome, limite, paginas).then(
     alunos => {
       res.json(alunos)
     })

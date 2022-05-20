@@ -15,16 +15,35 @@ const insertAluno = async (aluno: Aluno) =>{
   return retorno[0].id as number | undefined;
 }
 
-const listAlunos = async (limite : number = 25, paginas : number = 1, nome : string = '') => {
-  let text : string = `SELECT * FROM aluno `;
-  let where : string = ``;
-  
-  if (nome != '') where = `WHERE nome like '%${nome}%' `;
+const listAlunos = async (idNome? : number | string, limite?: number, paginas?: number) => {
+  const sqlQry: string[] = [];
+  limite = limite || 25;
+  paginas = paginas || 1;
 
-  if (where != ``) text = text + where;
+  let text: string = '';
+  sqlQry.push(`SELECT * FROM aluno`);
+  // console.log(eval('sqlQry.includes(`WHERE`)'))
+ 
+  if (!!idNome) {
+    sqlQry.push('WHERE');
 
-  text = text + `LIMIT ${limite} `;
-  text = text + `OFFSET ${paginas} `;
+    if (typeof idNome == 'string') sqlQry.push(`nome like '%${idNome}%'`)
+    else sqlQry.push(`id = ${idNome}`);
+  }
+
+  // montarSql('WHERE', '!contains(`WHERE)`', 'AND')
+
+  // if (!!idNome) {
+  //   if (!sqlQry.includes(`WHERE`)) sqlQry.push('WHERE');
+  //   else sqlQry.push('AND');
+
+  //   sqlQry.push(`nome like '%${idNome}%'`);
+  // }
+  // console.log(eval('sqlQry.includes(`WHERE`)'))
+  sqlQry.push(`LIMIT ${limite} OFFSET ${(paginas - 1) * limite}`);
+
+  text = sqlQry.join(' ')
+  console.log(text)
 
   const retorno = await query(text);
 
