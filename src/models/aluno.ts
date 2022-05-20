@@ -13,8 +13,7 @@ export type Aluno = {
 
 const insertAluno = async (aluno: Aluno) =>{
   await query('INSERT INTO aluno (rga, nome, curso, situacao, registrado_em ) VALUES(?, ?, ?, ?, ?)', [aluno.rga, aluno.nome, aluno.curso, aluno.situacao, Date.now()]);
-  let retorno = await query(`SELECT seq as id FROM sqlite_sequence WHERE name = 'aluno'`, []);
-  return retorno[0].id as number | undefined;
+  return getAlunoById(aluno.id);
 }
 
 const listAlunos = async (nome? : string, limite?: number, paginas?: number) => {
@@ -47,6 +46,11 @@ const deleteAluno = async(id: number, res: Response) => {
       (aluno ? del(id) : notFound(res))
     })
     .catch(err => internalServerError(res, err))
+}
+
+const updateAluno = async (aluno: Aluno) =>{
+  await query('UPDATE aluno SET rga = ?, nome = ?, curso = ?, situacao = ? WHERE id = ? ', [aluno.id, aluno.rga, aluno.nome, aluno.curso, aluno.situacao]);
+  return getAlunoById(aluno.id);
 }
 
 const del = async(id : number) => {

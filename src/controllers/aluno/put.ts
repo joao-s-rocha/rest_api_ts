@@ -23,10 +23,8 @@ export const insertAluno = (req: Request, res: Response) => {
   aluno.rga = aluno.rga.substring(0,4)+'.'+aluno.rga.substring(4,8)+'.'+aluno.rga.substring(8,11)+'-'+aluno.rga.substring(11,12);
 
   alunoModel.insertAluno(aluno).then(
-    id => {
-      res.json({
-        id
-      })
+    aluno => {
+      res.json({aluno})
     })
     .catch(err => internalServerError(res, err))
 }
