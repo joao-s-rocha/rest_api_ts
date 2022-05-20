@@ -1,4 +1,4 @@
-import { query } from "../services/db";
+import { query, queryFirst } from "../services/db";
 
 export type Aluno = {
   id: number;
@@ -15,9 +15,25 @@ const insertAluno = async (aluno: Aluno) =>{
   return retorno[0].id as number | undefined;
 }
 
-const listAlunos = async (id? : number, limite? : number, paginas? : number) => {
-  const retorno = await query(`SELECT * FROM aluno`);
+const listAlunos = async (limite : number = 25, paginas : number = 1, nome : string = '') => {
+  let text : string = `SELECT * FROM aluno `;
+  let where : string = ``;
+  
+  if (nome != '') where = `WHERE nome like '%${nome}%' `;
+
+  if (where != ``) text = text + where;
+
+  text = text + `LIMIT ${limite} `;
+  text = text + `OFFSET ${paginas} `;
+
+  const retorno = await query(text);
+
   return retorno as Aluno[];
+}
+
+const getAlunoById = async(id: number) => {
+  const retorno = await queryFirst(`SELECT * FROM aluno WHERE id = ? `, [id]);
+  return retorno as Aluno;
 }
 
 const getAlunoByName = async (name: string) => {
@@ -28,4 +44,5 @@ const getAlunoByName = async (name: string) => {
 export const alunoModel = {
   insertAluno,
   listAlunos,
+  getAlunoById
 }

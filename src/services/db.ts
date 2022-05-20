@@ -10,10 +10,15 @@ export const openConnection = () => {
   return db;
 }
 
-export const query = (query: string, params?: any[]) => {
+export const queryFirst = async (qry: string, params?: any[]) => {
+  const retorno = await query(qry, params);
+  return retorno[0];
+}
+
+export const query = (qry: string, params?: any[]) => {
   let db = openConnection();
   return new Promise<any[]>((resolve, reject) => {
-    db.all(query, params, (err, rows) => {
+    db.all(qry, params, (err, rows) => {
       if(err)
         reject(err);
       else

@@ -6,6 +6,7 @@ const alunoRouter = Router();
 
 alunoRouter.post('/', alunoController.insertAluno);
 alunoRouter.get('/', alunoController.getAlunos);
+alunoRouter.get('/:id', alunoController.getAlunoById);
 
 export {
   alunoRouter
