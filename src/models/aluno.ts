@@ -13,7 +13,8 @@ export type Aluno = {
 
 const insertAluno = async (aluno: Aluno) =>{
   await query('INSERT INTO aluno (rga, nome, curso, situacao, registrado_em ) VALUES(?, ?, ?, ?, ?)', [aluno.rga, aluno.nome, aluno.curso, aluno.situacao, Date.now()]);
-  return getAlunoById(aluno.id);
+  let retorno = await query(`SELECT seq as id FROM sqlite_sequence WHERE name = 'aluno'`);
+  return getAlunoById(retorno[0].id);
 }
 
 const listAlunos = async (nome? : string, limite?: number, paginas?: number) => {
@@ -29,37 +30,29 @@ const listAlunos = async (nome? : string, limite?: number, paginas?: number) => 
   }
 
   sqlQry.push(`LIMIT ${limite} OFFSET ${(paginas - 1) * limite}`);
-  console.log(sqlQry.join(' '));
   const retorno = await query(sqlQry.join(' '));
 
   return retorno as Aluno[];
 }
 
-const getAlunoById = async(id: number) => {
+const getAlunoById = async (id: number) => {
   const retorno = await queryFirst(`SELECT * FROM aluno WHERE id = ? `, [id]);
-  return retorno as Aluno;
+  return retorno as Aluno | undefined;
 }
 
 const deleteAluno = async(id: number, res: Response) => {
-  getAlunoById(id)
-    .then((aluno) => {
-      (aluno ? del(id) : notFound(res))
-    })
-    .catch(err => internalServerError(res, err))
+  await queryFirst(`DELETE FROM aluno WHERE id = ? `, [id]);
 }
 
 const updateAluno = async (aluno: Aluno) =>{
-  await query('UPDATE aluno SET rga = ?, nome = ?, curso = ?, situacao = ? WHERE id = ? ', [aluno.id, aluno.rga, aluno.nome, aluno.curso, aluno.situacao]);
+  await query('UPDATE aluno SET rga = ?, nome = ?, curso = ?, situacao = ? WHERE id = ?', [aluno.rga, aluno.nome, aluno.curso, aluno.situacao, aluno.id]);
   return getAlunoById(aluno.id);
-}
-
-const del = async(id : number) => {
-  await queryFirst(`DELETE FROM aluno WHERE id = ? `, [id]);
 }
 
 export const alunoModel = {
   insertAluno,
   listAlunos,
   getAlunoById,
-  deleteAluno
+  deleteAluno,
+  updateAluno
 }

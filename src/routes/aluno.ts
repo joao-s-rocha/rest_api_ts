@@ -12,6 +12,7 @@ alunoRouter.get('/:id', alunoController.getAlunoById);
 alunoRouter.delete('/:id', alunoController.deleteAluno);
 alunoRouter.delete('/', alunoController.metodoInvalido);
 
+alunoRouter.put('/:id', alunoController.updateALuno);
 alunoRouter.put('/', alunoController.metodoInvalido);
 
 export {

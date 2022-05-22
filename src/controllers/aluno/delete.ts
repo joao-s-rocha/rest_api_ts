@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import { alunoModel } from "../../models/aluno";
-import { badRequest, internalServerError, okay, validateNumber } from "../../services/util";
+import { badRequest, internalServerError, notFound, okay, validateNumber } from "../../services/util";
 
-export const deleteAluno = (req: Request, res: Response) => {
+export const deleteAluno = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  {
-    if(!validateNumber(id))
-      return badRequest(res, 'id inválido');
-  }
+
+  if (!validateNumber(id))
+    return badRequest(res, 'id inválido');
+
+  const alunoSaved = await alunoModel.getAlunoById(id);
+  if (!alunoSaved)
+    return notFound(res);
 
   alunoModel.deleteAluno(id, res)
     .then(() => okay(res))

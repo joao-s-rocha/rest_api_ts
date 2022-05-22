@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { alunoModel } from '../../models/aluno';
+import { Aluno, alunoModel } from '../../models/aluno';
 import { badRequest, internalServerError, notFound, okay, validateNumber } from "../../services/util";
 
 export const insertAluno = (req: Request, res: Response) => {
-  const aluno = req.body;
+  const aluno = req.body as Aluno;
 
   if (!aluno)
     return badRequest(res, "Aluno inválido");
@@ -22,11 +22,9 @@ export const insertAluno = (req: Request, res: Response) => {
 
   aluno.rga = aluno.rga.substring(0,4)+'.'+aluno.rga.substring(4,8)+'.'+aluno.rga.substring(8,11)+'-'+aluno.rga.substring(11,12);
 
-  alunoModel.insertAluno(aluno).then(
-    id => {
-      res.json({
-        id
-      })
+  return alunoModel.insertAluno(aluno)
+    .then(alunos => {
+      res.json(alunos)
     })
     .catch(err => internalServerError(res, err))
 }
